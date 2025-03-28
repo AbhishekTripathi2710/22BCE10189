@@ -104,10 +104,9 @@ app.get('/posts', async (req, res) => {
             const popularPosts = postsWithComments.filter(post => post.commentCount === maxComments);
             return res.json(popularPosts);
         } else if (type === 'latest') {
-            //here I have done the same sorting as in /users route to get the latest 5 posts
+            // I have fixed the issue of sorting the posts on the basis of id and then returning the top 5 latest posts by sorting the posts on the basis of id of the posts such that all latst posts will be at the top
             const latestPosts = allPosts
-                .filter(post => post.createdAt) 
-                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .sort((a, b) => b.id - a.id) 
                 .slice(0, 5);
             return res.json(latestPosts);
         }
