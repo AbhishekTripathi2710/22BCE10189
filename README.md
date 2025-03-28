@@ -12,13 +12,13 @@
    - Sensitive information such as API URLs, credentials, and other configurations are stored in a `.env` file for security.
    - The `.env` file includes:
      ```
-     AUTH_URL=http://20.244.56.144/test/auth
-     COMPANY_NAME=VITBhopal
-     CLIENT_ID=3f110982-ea0b-48c0-907f-8f978a0e7037
-     CLIENT_SECRET=EtJyhTiWZNASNEhd
-     OWNER_NAME=Abhishek Tripathi
-     OWNER_EMAIL=abhishektripathi2022@vitbhopal.ac.in
-     ROLL_NO=22BCE10189
+     AUTH_URL
+     COMPANY_NAME
+     CLIENT_ID
+     CLIENT_SECRET
+     OWNER_NAME
+     OWNER_EMAIL
+     ROLL_NO
      ```
 
 3. **Endpoints**:
