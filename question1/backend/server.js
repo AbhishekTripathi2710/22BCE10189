@@ -28,6 +28,7 @@ async function fetchAccessToken() {
 }
 
 // This route will fetch all the users from the API and then log the users in the console
+//Now I have completed the sorting of users on the basis of postCount and then returning the top 5 users
 app.get('/users', async (req, res) => {
     try {
         const accessToken = await fetchAccessToken(); 
@@ -39,7 +40,24 @@ app.get('/users', async (req, res) => {
         console.log(accessToken);
         const users = response.data.users;
 
-        console.log(users);
+        const userArray = Object.entries(users).map(([id, name]) => ({ id, name }));
+
+        const userPostCounts = await Promise.all(userArray.map(async (user) => {
+            const postsResponse = await axios.get(`http://20.244.56.144/test/users/${user.id}/posts`, { // Corrected URL
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            return { user, postCount: postsResponse.data.posts.length }; // Use `posts` array length
+        }));
+
+            // This will Sort(on the basis of comparison sorting) the  users I fetched by post count in descending order and return the top 5
+            const topUsers = userPostCounts
+                .sort((a, b) => b.postCount - a.postCount)
+                .slice(0, 5)
+                .map(({ user, postCount }) => ({ ...user, postCount }));
+
+        res.json(topUsers);
     } catch (error) {
         console.error('Error in /users route:', error.response ? error.response.data : error.message);
         res.status(500).json({ error: 'Failed to fetch top users' });
