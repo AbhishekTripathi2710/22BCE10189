@@ -37,12 +37,26 @@
        { "id": "5", "name": "Charlie Brown", "postCount": 5 }
      ]
      ```
-     ### Postmon Response
-        ![alt text](image.png)
+    ## Postmon Response
+       usersResponse.png
+   - **`GET /posts`**:
+     - Fetches posts for all users from `http://20.244.56.144/test/users/:userId/posts`.
+     - Supports two query parameters:
+       - `type=popular`: Fetches all posts and determines the post(s) with the highest number of comments by querying `http://20.244.56.144/test/posts/:postId/comments`.
+       - `type=latest`: Sorts all posts by their `createdAt` property in descending order and returns the latest 5 posts.
+   - **Example Responses**:
+     - **Popular Posts**:
+       ## Postmon Response
+           populorresponse.png
+
+      - **latest Posts**:
+      - the latest posts are returning an empty array I will try to fix that but currently it is not showing any data 
+
 
 4. **Sorting and Filtering**:
    - Users are sorted by their post counts using comparison sorting.
-   - Only the top 5 users are returned.
+   - Posts are sorted by their `createdAt` property for the `latest` type.
+   - Posts with the highest number of comments are identified for the `popular` type.
 
 5. **Error Handling**:
    - Proper error handling is implemented for all API requests.
@@ -66,5 +80,9 @@
 4. **Test the Endpoints**:
    - Use tools like Postman or `curl` to test the endpoints:
      - `GET /users`: Returns the top 5 users sorted by post count.
+     - `GET /posts?type=popular`: Returns the post(s) with the highest number of comments.
+     - `GET /posts?type=latest`: Returns the latest 5 posts sorted by creation date.
+
+
 
 

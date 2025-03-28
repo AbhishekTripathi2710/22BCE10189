@@ -1,4 +1,3 @@
-
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -37,13 +36,12 @@ app.get('/users', async (req, res) => {
                 "Authorization": `Bearer ${accessToken}`
             }
         });
-        console.log(accessToken);
         const users = response.data.users;
 
         const userArray = Object.entries(users).map(([id, name]) => ({ id, name }));
 
         const userPostCounts = await Promise.all(userArray.map(async (user) => {
-            const postsResponse = await axios.get(`http://20.244.56.144/test/users/${user.id}/posts`, { // Corrected URL
+            const postsResponse = await axios.get(`http://20.244.56.144/test/users/${user.id}/posts`, { 
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
@@ -64,6 +62,60 @@ app.get('/users', async (req, res) => {
     }
 });
 
+app.get('/posts', async (req, res) => {
+    try {
+        const { type } = req.query;
+        if (!type || !['popular', 'latest'].includes(type)) {
+            return res.status(400).json({ error: 'Invalid or missing type query parameter' });
+        }
+        //doing the same as above to fetch the access token
+        const accessToken = await fetchAccessToken();
+
+        // this is used for fetching all posts 
+        const usersResponse = await axios.get('http://20.244.56.144/test/users', {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        });
+        const users = Object.keys(usersResponse.data.users);
+
+        const allPosts = [];
+        for (const userId of users) {
+            const postsResponse = await axios.get(`http://20.244.56.144/test/users/${userId}/posts`, {
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+            allPosts.push(...postsResponse.data.posts);
+        }
+
+        if (type === 'popular') {
+            //First fetch all the comments for each post and then find the post with the maximum number of comments
+            const postsWithComments = await Promise.all(allPosts.map(async (post) => {
+                const commentsResponse = await axios.get(`http://20.244.56.144/test/posts/${post.id}/comments`, {
+                    headers: {
+                        "Authorization": `Bearer ${accessToken}`
+                    }
+                });
+                return { ...post, commentCount: commentsResponse.data.comments.length };
+            }));
+
+            const maxComments = Math.max(...postsWithComments.map(post => post.commentCount));
+            const popularPosts = postsWithComments.filter(post => post.commentCount === maxComments);
+            return res.json(popularPosts);
+        } else if (type === 'latest') {
+            //here I have done the same sorting as in /users route to get the latest 5 posts
+            const latestPosts = allPosts
+                .filter(post => post.createdAt) 
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 5);
+            return res.json(latestPosts);
+        }
+    } catch (error) {
+        console.error('Error in /posts route:', error.response ? error.response.data : error.message);
+        res.status(500).json({ error: 'Failed to fetch posts' });
+    }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
