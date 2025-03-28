@@ -58,7 +58,7 @@
 
 4. **Sorting and Filtering**:
    - Users are sorted by their post counts using comparison sorting.
-   - Posts are sorted by their `createdAt` property for the `latest` type.
+   - Posts are sorted by their post ID for latest posts
    - Posts with the highest number of comments are identified for the `popular` type.
 
 5. **Error Handling**:
