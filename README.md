@@ -5,7 +5,7 @@
 ## Features Implemented
 
 1. **Dynamic Access Token Fetching**:
-   - A function `fetchAccessToken` dynamically fetches the access token from the test server (`http://20.244.56.144/test/auth`) using the provided credentials.
+   - A function `fetchAccessToken` dynamically fetches the access token from the test server using the provided credentials.
    - The token is fetched every time a request is made to avoid token expiry issues.
 
 2. **Environment Variables**:
@@ -81,10 +81,9 @@
    ```
 
 4. **Test the Endpoints**:
-   - Use tools like Postman or `curl` to test the endpoints:
      - `GET /users`: Returns the top 5 users sorted by post count.
      - `GET /posts?type=popular`: Returns the post(s) with the highest number of comments.
-     - `GET /posts?type=latest`: Returns the latest 5 posts sorted by creation date.
+     - `GET /posts?type=latest`: Returns the latest 5 posts sorted by highest post id.
 
 
 
